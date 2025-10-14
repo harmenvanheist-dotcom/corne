@@ -1,9 +1,21 @@
-import { openai } from "@/app/openai";
+import { getOpenAIClient } from "@/app/openai";
 
 export const runtime = "nodejs";
 
-// Create a new thread
+// Maak een nieuw gesprek aan voor de workflow
 export async function POST() {
-  const thread = await openai.beta.threads.create();
-  return Response.json({ threadId: thread.id });
+  try {
+    const openai = getOpenAIClient();
+    const conversation = await openai.conversations.create();
+    return Response.json({ threadId: conversation.id });
+  } catch (error) {
+    console.error("Kon geen workflow-conversatie starten:", error);
+    return new Response(
+      JSON.stringify({
+        error:
+          "Kan geen workflow starten. Controleer of OPENAI_API_KEY is ingesteld.",
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
 }

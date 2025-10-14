@@ -1,15 +1,15 @@
-import { openai } from "@/app/openai";
+export const runtime = "nodejs";
 
-// Send a new message to a thread
-export async function POST(request, { params: { threadId } }) {
-  const { toolCallOutputs, runId } = await request.json();
-
-  const stream = openai.beta.threads.runs.submitToolOutputsStream(
-    threadId,
-    runId,
-    // { tool_outputs: [{ output: result, tool_call_id: toolCallId }] },
-    { tool_outputs: toolCallOutputs }
+// Workflows beheren hun eigen tools; deze endpoint blijft voor backward compatibility.
+export async function POST() {
+  return new Response(
+    JSON.stringify({
+      error:
+        "Tool output streaming wordt in deze workflow-template niet ondersteund. Voeg je eigen endpoint toe indien nodig.",
+    }),
+    {
+      status: 410,
+      headers: { "Content-Type": "application/json" },
+    }
   );
-
-  return new Response(stream.toReadableStream());
 }

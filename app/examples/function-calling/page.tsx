@@ -1,44 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import styles from "../shared/page.module.css";
 import Chat from "../../components/chat";
-import WeatherWidget from "../../components/weather-widget";
-import { getWeather } from "../../utils/weather";
-import { RequiredActionFunctionToolCall } from "openai/resources/beta/threads/runs/runs";
-
-interface WeatherData {
-  location?: string;
-  temperature?: number;
-  conditions?: string;
-}
 
 const FunctionCalling = () => {
-  const [weatherData, setWeatherData] = useState<WeatherData>({});
-  const isEmpty = Object.keys(weatherData).length === 0;
-
-  const functionCallHandler = async (call: RequiredActionFunctionToolCall) => {
-    if (call?.function?.name !== "get_weather") return;
-    const args = JSON.parse(call.function.arguments);
-    const data = getWeather(args.location);
-    setWeatherData(data);
-    return JSON.stringify(data);
-  };
-
   return (
     <main className={styles.main}>
       <div className={styles.container}>
         <div className={styles.column}>
-          <WeatherWidget
-            location={weatherData.location || "---"}
-            temperature={weatherData.temperature?.toString() || "---"}
-            conditions={weatherData.conditions || "Sunny"}
-            isEmpty={isEmpty}
-          />
+          <div
+            style={{
+              padding: "24px",
+              background: "white",
+              borderRadius: "16px",
+              boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
+            }}
+          >
+            <h2>Client functies</h2>
+            <p>
+              Workflow-runs kunnen eigen tools aanroepen, maar deze template
+              bevat nog geen client-side handler. Voeg hier je eigen UI en
+              logic toe wanneer je custom tools wilt koppelen.
+            </p>
+          </div>
         </div>
         <div className={styles.chatContainer}>
           <div className={styles.chat}>
-            <Chat functionCallHandler={functionCallHandler} />
+            <Chat />
           </div>
         </div>
       </div>
